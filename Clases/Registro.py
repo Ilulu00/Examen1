@@ -6,7 +6,6 @@ class Registro:
         self.Persona = Persona 
         self.estado = "Pendiente"
         
-        
     def confirmacion(self):
         self.confirmacion = "Confirmado"
         
