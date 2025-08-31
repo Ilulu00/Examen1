@@ -1,11 +1,11 @@
-from Descuento import Descuento
 from Registro import Registro
+from Descuento import Descuento
 class Pago:
     
     def __init__(self, metodo_pago: str, monto: float, Desc: Descuento, Regt: Registro):
-        self.metodo_pago = metodo_pago.lower()
-        self.Desc = Desc
+        self.metodo_pago = metodo_pago
         self._monto = monto
+        self.Descuento = Desc
         self.Registro = Regt
     
     def pagar(self):

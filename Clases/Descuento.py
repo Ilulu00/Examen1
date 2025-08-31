@@ -1,20 +1,21 @@
 class Descuento:
-    
-    def descuentos(totalPagar: float) -> float: #Función para aplicar descuentos al momento de pagar
-        if(totalPagar > 200000 and totalPagar <= 600000): #Descuenta el 20%
-            reduccion = totalPagar*0.1
-            totalPagar = totalPagar - reduccion
+    def __init__(self):
+        self.ultimo_descuento = 0  # Guarda cuánto se descontó en la última compra (opcional)
+
+    def calcular_descuento(self, totalPagar: float) -> float:
+        if totalPagar > 200000 and totalPagar <= 600000:  # 10% de descuento
+            reduccion = totalPagar * 0.10
+            self.ultimo_descuento = reduccion
+            return totalPagar - reduccion
+
+        elif totalPagar > 50000 and totalPagar <= 200000:  # 5% de descuento
+            reduccion = totalPagar * 0.05
+            self.ultimo_descuento = reduccion
+            return totalPagar - reduccion
+
+        else:  # No aplica descuento
+            self.ultimo_descuento = 0
             return totalPagar
-    
-        elif(totalPagar > 50000 and totalPagar <= 200000): #Descuenta el 15%
-            reduccion = totalPagar*0.05
-            totalPagar = totalPagar - reduccion
-            return totalPagar
-    
-        else:
-            return totalPagar #Como no aplica ningún descuento retorna el valor original
-    
-    totalPagar_str:str = input("Ingrese total a pagar: ")
-    totalPagar:float = float(totalPagar_str)
-    resultado = descuentos(totalPagar)
-   
+
+    def aplicar_descuento(self, totalPagar: float) -> float:
+        return self.calcular_descuento(totalPagar)

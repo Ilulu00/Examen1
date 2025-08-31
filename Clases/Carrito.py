@@ -1,17 +1,18 @@
+from Producto import Producto
 class Carrito:
     
     def __init__(self):
         self.productos = []
         self.total = 0
     
-    def agregar_producto(self, producto: Producto) -> None: #temporalmente dara error, porque ni e importado la clase producto
-        self.Producto.append(producto)
+    def agregar_producto(self, producto: Producto) -> None: 
+        self.productos.append(producto.codigo)
         self.total += producto.precio
-        print(f"Se agrego el producto {producto.nombre}, de la categoria {producto.categoria} al carrito.")
+        print(f"Se agrego el producto {producto.nombre} al carrito.")
     
-    def quitar_producto(self, producto: Producto) -> None: #temporalmente dara error, porque ni e importado la clase producto
+    def quitar_producto(self, producto: Producto) -> None: 
         if producto in self.Productos:
-            self.Productos.remove(producto)
+            self.productos.remove(producto.codigo)
             self.total -= producto.precio
             print(f"Se quito el producto {producto.nombre} del carrito.")
         else:
@@ -23,6 +24,6 @@ class Carrito:
             print("Lo siento, no hay nada en tu carrito de compras.")
         else:
             for p in self.productos:  #For para iterar sobre los productos y mostrarlos
-                print(f"- {p.nombre} -> ${p.precio}")
+                print(f"- {Producto.nombre} -> ${Producto.percio}")
             print(f"Total: ${self.total}")
             

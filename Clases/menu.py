@@ -1,4 +1,49 @@
 from Producto import *  
+from Carrito import Carrito
+from Pago import Pago
+from Factura import Factura
+from Descuento import Descuento
+from Registro import Registro
+
+mi_carrito = Carrito()
+mi_descuento = Descuento()
+
+
+def buscar_producto_por_codigo_txt(codigo: int):
+    archivos = {
+        "Fruta": Fruta,
+        "Verdura": Verdura,
+        "Carne": Carne,
+        "Limpieza": Limpieza
+    }
+    
+    for nombre_archivo, clase in archivos.items():
+        archivo_txt = nombre_archivo + ".txt"
+        if archivo_vacio(archivo_txt):
+            continue
+        with open(archivo_txt, "r") as f:
+            for linea in f:
+                linea = linea.strip()
+                if linea.startswith(f"Código: {codigo}"):
+                    partes = linea.split(", ")
+                    cod = int(partes[0].split(": ")[1])
+                    nombre = partes[1].split(": ")[1]
+                    precio = float(partes[2].split(": ")[1])
+                    stock = int(partes[3].split(": ")[1])
+                    
+                    if clase == Fruta:
+                        vitaminas = partes[4].split(": ")[1]
+                        return Fruta(cod, nombre, precio, stock, vitaminas)
+                    elif clase == Verdura:
+                        conservacion = partes[4].split(": ")[1]
+                        return Verdura(cod, nombre, precio, stock, conservacion)
+                    elif clase == Carne:
+                        animal = partes[4].split(": ")[1]
+                        return Carne(cod, nombre, precio, stock, animal)
+                    elif clase == Limpieza:
+                        descripcion = partes[4].split(": ")[1]
+                        return Limpieza(cod, nombre, precio, stock, descripcion)
+    return None
 
 def menu_principal():
     while True:
@@ -32,11 +77,13 @@ def menu_cliente():
     while True:
         print("")
         print("-----Menú clientes-----")
-        print("1.Todos los productos")
-        print("2.Frutas")
-        print("3.Verduras")
-        print("4.Carnes")
-        print("5.Limpieza")
+        print("1. Todos los productos.")
+        print("2. Frutas.")
+        print("3. Verduras.")
+        print("4. Carnes.")
+        print("5. Limpieza.")
+        print("6. Ver el Carrito.")
+        print("7. Pagar.")
         print("0.Salir")
         print("")
 
@@ -57,6 +104,15 @@ def menu_cliente():
         elif(opC == 5):
             print("")
             verLimpio("Limpieza.txt") 
+        elif(opC == 6):
+            print("")
+            menu_carrito()
+        elif(opC == 7):
+            print("")
+            menu_Facturacion()
+            
+            
+            
         elif(opC == 0):
             print("")
             print("Hasta luego")
@@ -232,5 +288,75 @@ def autenticador(user: str, contraseña: str) -> bool:
             if user == usuario_archivo and contraseña == contraseña_archivo:
                 return True
     return False
+
+
+def menu_carrito():
+    print("====Tu carrito====")
+    print("1. Agregar un producto a tu carrito. ")
+    print("2. Ver tu carrito: ")
+    print("3. Quitar un producto de tu carrito.")
+    
+    try:
+        opMC = int(input("Ingrese la opción deseada: "))
+    except ValueError:
+            print("Por favor, ingrese una opcion valida..")
+
+    if(opMC == 1):
+            codigo = int(input("Ingrese el código del producto a agregar: "))
+            producto = buscar_producto_por_codigo_txt(codigo)
+            if producto:
+                mi_carrito.agregar_producto(producto)
+                print(f"{producto.nombre} agregado al carrito!")
+            else:
+                print("Producto no encontrado.")
+                
+    elif(opMC == 2):
+            mi_carrito.mostrar_carrito()
+            
+    elif(opMC == 3):
+            codigo = int(input("Ingrese el código del producto a quitar: "))
+            producto = buscar_producto_por_codigo_txt(codigo)
+            if producto:
+                mi_carrito.quitar_producto(producto)
+                print(f"{producto.nombre} removido del carrito!")
+            else:
+                print("Producto no encontrado.")
+    else:
+        print("Opción no válida.")
+
+def menu_Facturacion():
+    print("====Facturación====")
+    print("1. Metodo de pago a utilizar y factura.")
+    
+    try:
+        opMF = int(input("Ingrese la opcion a mostrar: "))
+    except ValueError:
+        print("Por favor, ingrese una opcion valida.")    
+    
+    if(opMF == 1):
+         if mi_carrito.total == 0:
+            print("El carrito está vacío.")
+         else:
+            print("===Mi carrito===")
+            mi_carrito.mostrar_carrito()
+            
+            total_con_descuento = mi_descuento.aplicar_descuento(mi_carrito.total)
+            print(f"Total a pagar con descuento aplicado: {total_con_descuento}")
+            
+            metodo = input("Ingrese método de pago (efectivo/tarjeta): ")
+            mi_metodo_pago = Pago(metodo_pago=metodo, monto=mi_carrito.total, Desc=mi_descuento, Regt=mi_registro)
+            Pag = mi_metodo_pago.pagar()
+            if Pag:
+                mi_factura = Factura(Regt=mi_registro, Pag=mi_metodo_pago, Desc=mi_descuento, carrito=mi_carrito)
+                mi_factura.mostrar_factura()
+                mi_factura.guardar_factura()
+            else:
+                print("No se pudo realizar el pago, por ende no se puede generar una factura.")
+    else:
+        print("Opción no válida.")
+        
+    
+    
+    
 
 menu_principal() 
