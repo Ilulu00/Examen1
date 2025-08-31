@@ -1,9 +1,4 @@
-from Producto import *
-
-ruta_frutas = "../archivos/Frutas.txt"
-ruta_verduras = "../archivos/Verduras.txt"
-ruta_carnes = "../archivos/Carnes.txt"
-ruta_limpieza = "../archivos/Limpieza.txt"
+from Producto import *  
 
 def menu_principal():
     while True:
@@ -17,7 +12,16 @@ def menu_principal():
         if(op == 1):
             menu_cliente()
         elif(op == 2):
-            menu_admin()  
+            usuario:str = input("Ingrese su usuario: ")
+            contraseña:str = input("Ingrese su contraseña: ")
+            autenticacion = autenticador(usuario,contraseña)
+
+            if(autenticacion == True):
+                menu_admin()
+            else:
+                print("Error, usted no es admin") 
+                break   
+              
         elif(op == 0):
             print("Hasta luego")
             break
@@ -59,7 +63,7 @@ def menu_cliente():
             break    
         else:
             print("")
-            ("Opción no válida, intente de nuevo")
+            ("Opción no válida, intente de nuevo")              
 
 def menu_admin():
     while True:
@@ -216,5 +220,17 @@ def menu_productos() -> int:
     print("")
 
     return opP
+
+def autenticador(user: str, contraseña: str) -> bool:
+    with open("Admin.txt", "r") as archivo:
+        for linea in archivo:
+            linea = linea.strip()
+            if linea == "":
+                continue
+            usuario_archivo, contraseña_archivo = linea.split(",")
+            
+            if user == usuario_archivo and contraseña == contraseña_archivo:
+                return True
+    return False
 
 menu_principal() 
